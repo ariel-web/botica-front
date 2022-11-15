@@ -95,21 +95,18 @@ export default {
           spinner: QSpinnerTail,
           color: 'negative',
         },
-        persistent: true, // we want the user to not be able to close it
-        ok: false // we want the user to not be able to close it
+        persistent: true, 
+        ok: false 
       })
 
-      // we simulate some progress here...
       let percentage = 0
       const interval = setInterval(() => {
         percentage = Math.min(100, percentage + Math.floor(Math.random() * 22))
 
-        // we update the dialog
         dialog.update({
           message: `${percentage}%`
         })
 
-        // if we are done...
         if (percentage === 100) {
           clearInterval(interval)
           setTimeout(() => {
@@ -169,7 +166,6 @@ export default {
         console.log(error.message)
         this.ErrorNoty("Usurio no registrado o bloqueado", "negative")
       })
-
 
     },
 
