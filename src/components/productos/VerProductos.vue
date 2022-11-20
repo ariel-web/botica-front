@@ -6,10 +6,8 @@
   </div>
   <div>
     <q-table
-      virtual-scroll
       :filter="filter"
       no-data-label="No hay Categorias"
-      hide-pagination
       :columns="columns"
       :rows="categorias"
       row-key="id"
@@ -70,9 +68,10 @@
           <q-td key="foto" :props="props" style="width: 60px">
             <div
               style="
+                position: relative;
                 border-radius: 0%;
-                height: 50px;
-                width: 50px;
+                height: 40px;
+                width: 40px;
                 overflow: hidden;
               "
             >
@@ -96,7 +95,7 @@
             style="
               padding: 0px;
               table-display: fixed;
-              width: 160px;
+              width: 360px;
               overflow: hidden;
             "
           >
@@ -105,6 +104,7 @@
               v-model="props.row.nombre"
               readonly="yes"
               style="
+                width: 360px;
                 margin-left: 15px;
                 border: none;
                 resize: none;
@@ -116,6 +116,9 @@
                 outline: none;
               "
             />
+          </q-td>
+          <q-td key="categoria" :props="props">
+            <span style="font-size: 0.8rem"> {{ props.row.cat }}</span>
           </q-td>
 
           <q-td key="laboratorio" :props="props">
@@ -131,7 +134,50 @@
               {{ props.row.vencimiento.split("-").reverse().join("/") }}</span
             >
           </q-td>
-          <q-td key="presentacion">
+
+          <!-- <q-td key="estado" :props="props">
+            <q-btn rounded outline color="green" size="0.6rem">
+              Disponible
+            </q-btn>
+          </q-td> -->
+          <q-td key="acciones" :props="props" style="width: 60px">
+            <div style="display: flex; margin-left: 20px">
+              <div
+                style="
+                  border: solid 0.5px #00000031;
+                  padding: 3px 6px;
+                  margin-right: 8px;
+                "
+                class="icon"
+              >
+                <q-icon
+                  style="cursor: pointer"
+                  name="visibility"
+                  size="0.9rem"
+                  color="blue"
+                  @click="editarAbrir(props.row)"
+                />
+              </div>
+              <div
+                class="icon"
+                style="
+                  border: solid 0.5px #00000031;
+                  padding: 1px 5px;
+                  margin-right: 20px;
+                "
+              >
+                <q-icon
+                  style="cursor: pointer"
+                  name="delete"
+                  size="1.0rem"
+                  color="red"
+                  @click="EliminarUsuario(props.row.id)"
+                />
+              </div>
+            </div>
+          </q-td>
+
+          <!-- <q-td key="presentacion">
             <span style="font-size: 0.8rem"> {{ props.row.presentacion }}</span>
           </q-td>
           <q-td key="unidades">
@@ -142,7 +188,7 @@
 
           <q-td key="precio">
             <span style="font-size: 0.8rem">S/ {{ props.row.precio }}</span>
-          </q-td>
+          </q-td> -->
         </q-tr>
       </template>
     </q-table>
@@ -168,6 +214,13 @@ const columns = [
     sortable: true,
   },
   {
+    name: "categoria",
+    label: "Categoria",
+    align: "left",
+    sortable: true,
+  },
+
+  {
     name: "laboratorio",
     label: "Laboratorio",
     align: "left",
@@ -187,21 +240,34 @@ const columns = [
     field: "vencimiento",
     sortable: true,
   },
+  // {
+  //   name: "estado",
+  //   label: "Estado",
+  //   align: "center",
+  //   field: "estado",
+  //   sortable: false,
+  // },
   {
-    name: "presentacion",
-    label: "Presentacion",
-    align: "left",
+    name: "acciones",
+    label: "Accion",
+    align: "center",
   },
-  {
-    name: "unidades",
-    label: "Und x Pres",
-    align: "left",
-  },
-  {
-    name: "precio",
-    label: "Precios",
-    align: "left",
-  },
+
+  // {
+  //   name: "presentacion",
+  //   label: "Presentacion",
+  //   align: "left",
+  // },
+  // {
+  //   name: "unidades",
+  //   label: "Und x Pres",
+  //   align: "left",
+  // },
+  // {
+  //   name: "precio",
+  //   label: "Precios",
+  //   align: "left",
+  // },
 ];
 
 export default {
@@ -251,7 +317,7 @@ export default {
         },
       };
       axios
-        .get("http://localhost:8000/admin/productos", config)
+        .get("http://localhost:8000/admin/getProductos", config)
         .then((response) => {
           let len = response.data.length;
           console.log(len);
@@ -273,11 +339,11 @@ export default {
                 stock_min: item.pro_stock_minimo,
                 stock_max: item.pro_stock_maximo,
                 descripcion: item.pro_descripcion,
-                presentacion: item.pre_presentacion,
-                precio: item.pre_precio,
-                unidades: item.pre_cantidad,
+                // presentacion: item.pre_presentacion,
+                // precio: item.pre_precio,
+                // unidades: item.pre_cantidad,
                 imagen: item.pro_foto,
-
+                cat: item.cat,
                 foto: "http://localhost:8000/productos/" + item.pro_foto,
               });
             }
@@ -297,5 +363,8 @@ textarea:read-only,
   pointer-events: none;
   background-color: #ffff0000 !important;
   color: #000000;
+}
+.icon:hover {
+  background: #cdcdcd5d;
 }
 </style>
